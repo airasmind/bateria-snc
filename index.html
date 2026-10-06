@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Evaluación de Batería Shekinah Nueva Cosecha</title>
+<meta name="description" content="Evaluación de batería de la Iglesia Shekinah Nueva Cosecha.">
+<meta name="theme-color" content="#1B1470">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Batería SNC">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<style id="css">
+/* Layout: una sola columna para móvil. Lista de alumnos, ficha con historial, y hoja de evaluación con pads numerados como una caja de ritmos. */
+:root{
+  color-scheme:light;
+  --bg:#F1F3FA;
+  --surface:#FFFFFF;
+  --surface2:#E2E6F4;
+  --ink:#12163A;
+  --muted:#575E85;
+  --line:#CBD1E8;
+  --accent:#2815BD;
+  --accent-ink:#FFFFFF;
+  --gold:#8A6F00;
+  --good:#0A6B17;
+  --danger:#B3362B;
+  --pad-off:#D5DAEE;
+  --hero-bg:#1B1470;--hero-ink:#F4F5FD;--hero-muted:#BDC0EC;--hero-off:#2E2799;--hero-on:#D8C23A;
+  --font-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --font-body:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C0E24;--surface:#151939;--surface2:#1F2459;--ink:#E9EBF9;--muted:#A2A8D0;--line:#2A3068;
+    --accent:#8F9BFF;--accent-ink:#090B2B;--gold:#E3CE4E;--good:#6FCF7F;--danger:#F08A80;--pad-off:#262B5E;--hero-bg:#1B1470;--hero-ink:#F4F5FD;--hero-muted:#BDC0EC;--hero-off:#2E2799;--hero-on:#D8C23A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C0E24;--surface:#151939;--surface2:#1F2459;--ink:#E9EBF9;--muted:#A2A8D0;--line:#2A3068;
+  --accent:#8F9BFF;--accent-ink:#090B2B;--gold:#E3CE4E;--good:#6FCF7F;--danger:#F08A80;--pad-off:#262B5E;--hero-bg:#1B1470;--hero-ink:#F4F5FD;--hero-muted:#BDC0EC;--hero-off:#2E2799;--hero-on:#D8C23A;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.45 var(--font-body);-webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.app{max-width:560px;margin-inline:auto;padding-inline:16px;padding-block:20px 120px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+h1{font:700 34px/1 var(--font-display);text-transform:uppercase;letter-spacing:.02em;margin:0}
+h2{font:700 30px/1.05 var(--font-display);letter-spacing:.01em;margin:0;text-wrap:balance}
+h3{font:600 12px/1 var(--font-body);text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0}
+.sub{color:var(--muted);margin:6px 0 0}
+.head{display:flex;flex-direction:column;gap:2px;margin-bottom:16px}
+
+.tabs{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:4px;background:var(--surface2);padding:4px;border-radius:12px;margin-bottom:16px}
+.tab{border:0;background:transparent;border-radius:9px;height:40px;font-weight:600;font-size:14px;padding:0 4px;color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+
+.stack{display:flex;flex-direction:column;gap:10px}
+.section{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+
+.add{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:16px}
+.add input{grid-column:1 / -1}
+.add select{min-width:0}
+input[type=text],input[type=number],input[type=date],select,textarea{
+  width:100%;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  height:46px;padding:0 12px;font-size:16px;
+}
+textarea{height:auto;min-height:84px;padding:10px 12px;resize:vertical}
+::placeholder{color:var(--muted);opacity:.8}
+
+.btn{height:46px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 18px;font-weight:600}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:disabled{opacity:.45;cursor:not-allowed}
+.btn.wide{width:100%}
+.link{background:none;border:0;padding:6px 0;color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.link.danger{color:var(--danger)}
+.back{background:none;border:0;padding:8px 0;margin-bottom:8px;color:var(--accent);font-weight:600}
+
+.row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-height:68px}
+.row-main{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+.row-name{font-weight:600;font-size:17px;overflow-wrap:anywhere}
+.row-meta{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;color:var(--muted);font-size:13px}
+.pill{border:1px solid var(--line);border-radius:99px;padding:1px 9px;font-size:12px;font-weight:600;color:var(--muted)}
+.pts{display:flex;flex-direction:column;align-items:flex-end;line-height:1}
+.pts b{font:700 32px/1 var(--font-display);font-variant-numeric:tabular-nums}
+.pts small{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+
+.rank{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.rank-pos{font:700 26px/1 var(--font-display);color:var(--muted);font-variant-numeric:tabular-nums}
+.rank.first .rank-pos{color:var(--gold)}
+.rank-name{font-weight:600;overflow-wrap:anywhere}
+.rank-bar{height:6px;background:var(--pad-off);border-radius:3px;margin-top:6px;overflow:hidden}
+.rank-bar i{display:block;height:100%;background:var(--accent)}
+.rank.first .rank-bar i{background:var(--gold)}
+
+.banner{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--muted);margin:0 0 16px}
+.empty{border:1.5px dashed var(--line);border-radius:12px;padding:22px 16px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:4px}
+
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px}
+.tile b{font:700 36px/1 var(--font-display);font-variant-numeric:tabular-nums}
+.tile b small{font-size:16px;color:var(--muted);font-weight:600}
+.tile span{font-size:12px;color:var(--muted)}
+
+.chart{width:100%;height:auto;display:block;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px 4px 0}
+.chart text{fill:var(--muted);font:500 9px var(--font-body)}
+.chart .val{fill:var(--ink);font-weight:600}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .bar{fill:var(--accent);opacity:.5}
+.chart .bar.last{opacity:1}
+
+.avg{display:grid;grid-template-columns:104px 1fr 34px;gap:10px;align-items:center;font-size:14px}
+.avg .meter{height:8px;background:var(--pad-off);border-radius:4px;overflow:hidden}
+.avg .meter i{display:block;height:100%;background:var(--accent)}
+.avg b{text-align:right;font-variant-numeric:tabular-nums}
+
+.ev{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.ev-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ev-title{min-width:0;overflow-wrap:anywhere}
+.ev-title b{font-weight:600}
+.ev-total{font:700 26px/1 var(--font-display);white-space:nowrap;font-variant-numeric:tabular-nums}
+.ev-total small{font-size:14px;color:var(--muted);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12px;color:var(--muted);background:var(--surface2);border-radius:6px;padding:3px 8px;font-variant-numeric:tabular-nums}
+.chip b{color:var(--ink);margin-left:4px}
+.ev p{margin:0}
+.meta{font-size:13px;color:var(--muted)}
+.note{font-size:14px}
+.confirm{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:14px}
+
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 4px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.full{grid-column:1 / -1}
+.field label{font-size:13px;font-weight:600;color:var(--muted)}
+
+.crit{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.crit-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.crit-name{font-weight:600}
+.crit-hint{font-size:13px;color:var(--muted)}
+.crit-val{font:700 28px/1 var(--font-display);white-space:nowrap;font-variant-numeric:tabular-nums}
+.crit-val small{font-size:14px;color:var(--muted);font-weight:600}
+.pads{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px}
+.pad{height:46px;min-width:0;padding:0;border:0;border-radius:5px;background:var(--pad-off);color:var(--muted);font-size:12px;font-weight:600;box-shadow:inset 0 -3px 0 rgba(0,0,0,.14);-webkit-tap-highlight-color:transparent}
+.pad.on{background:var(--accent);color:var(--accent-ink)}
+
+.savebar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom, 0px))}
+.savebar-in{max-width:560px;margin-inline:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.live{display:flex;align-items:baseline;gap:6px;white-space:nowrap}
+.live b{font:700 36px/1 var(--font-display);font-variant-numeric:tabular-nums}
+.live span{color:var(--muted);font-size:13px}
+
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top, 0px) + 12px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-size:14px;font-weight:600;max-width:calc(100% - 32px);text-align:center;z-index:10}
+.pill.good{color:var(--good);border-color:var(--good)}
+.pill.warn{color:var(--gold);border-color:var(--gold)}
+.pill.bad{color:var(--danger);border-color:var(--danger)}
+.state{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:14px;margin-bottom:12px}
+.avg b.low{color:var(--danger)}
+.test{background:var(--surface2);border-radius:8px;padding:10px 12px;font-size:14px;display:flex;flex-direction:column;gap:8px}
+.test p{margin:0}
+.guide{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.guide li{display:grid;grid-template-columns:44px 1fr;gap:8px}
+.guide b{font-variant-numeric:tabular-nums}
+.hero{background:var(--hero-bg);color:var(--hero-ink);border-radius:16px;padding:18px 18px 16px;margin-bottom:16px}
+.hero .eyebrow{font:600 12px/1.3 var(--font-body);text-transform:uppercase;letter-spacing:.14em;color:var(--hero-muted)}
+.hero h1{margin-top:8px;font-size:40px}
+.hero .sub{color:var(--hero-muted);margin-top:8px;font-size:14px}
+.steps{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;margin-top:18px}
+.steps i{display:block;height:14px;border-radius:3px;background:var(--hero-off)}
+.steps i.h{background:var(--hero-on);opacity:.45}
+.steps i.b{background:var(--hero-on)}
+.intro{color:var(--muted);margin:0 0 14px;font-size:15px}
+.self-name{margin-bottom:14px}
+.hist{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.hist-row{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:14px}
+.hist-row b{font:700 22px/1 var(--font-display);font-variant-numeric:tabular-nums}
+.result{display:flex;flex-direction:column;gap:10px;align-items:flex-start;margin-bottom:6px}
+.result .big{font:700 84px/1 var(--font-display);font-variant-numeric:tabular-nums}
+.result .big small{font-size:28px;color:var(--muted);font-weight:600}
+.todo{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.todo b{font-weight:600}
+.todo p{margin:0;font-size:14px;color:var(--muted)}
+.actions{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+a.btn{display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--ink)}
+a.btn.primary{color:var(--accent-ink)}
+.copybox{width:100%;height:auto;min-height:150px;padding:10px 12px;font-size:14px}
+@media (prefers-reduced-motion: no-preference){
+  .toast{animation:pop .18s ease-out}
+  @keyframes pop{from{opacity:0;transform:translate(-50%,-6px)}to{opacity:1;transform:translate(-50%,0)}}
+}
+@media (max-width:380px){
+  .avg{grid-template-columns:84px 1fr 30px}
+  .pad{font-size:11px}
+}
+
+html{padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+.hero-top{display:flex;align-items:center;gap:12px}
+.logo{width:64px;height:64px;border-radius:50%;flex:none;background:#fff;display:block}
+.hero .eyebrow{flex:1;min-width:0}
+.steps i.h{background:var(--hero-muted);opacity:.5}
+.foot{margin-top:28px;text-align:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script id="data" type="application/json">{"students":[],"evals":[]}</script>
+<script id="code">
+(function(){
+'use strict';
+
+var CRITERIA=[
+  {k:'postura',n:'Postura y agarre',s:'Postura',h:'Se sienta cómodo, agarra las baquetas sin apretar y golpea en el centro del tambor',
+   t:'Míralo tocar 2 minutos un ritmo suave. Fíjate que el asiento esté a una altura cómoda, que tenga la espalda recta, que agarre las baquetas sin apretarlas y que tenga los hombros sueltos, sin subirlos.',
+   g:[['1–3','Sube los hombros, aprieta fuerte las baquetas y se ve tenso.'],['4–6','Está bien a ratos, pero se tensa cuando toca más rápido.'],['7–8','Está cómodo y relajado casi todo el tiempo.'],['9–10','Siempre relajado, aunque toque rápido, y la baqueta rebota sola.']]},
+  {k:'pulso',n:'Ritmo parejo',s:'Ritmo',h:'Mantiene la misma velocidad, sin correr ni atrasarse',
+   t:'Pon el metrónomo (el "click" que marca el tiempo) en 70, luego en 90 y luego en 110. En cada velocidad, toca solo el hi-hat, un golpe por cada click (negras), sin bombo ni caja, durante 1 minuto. Así se mide solo el pulso, sin otro ritmo de por medio. Al final, apaga el click 30 segundos mientras sigue tocando y préndelo otra vez: debe seguir igual de parejo. Cuenta en cuántas de las 3 velocidades se mantiene parejo, sin importar cuáles: tocar lento y parejo cuesta tanto como tocar rápido. Anota en el comentario en cuál velocidad falló.',
+   g:[['1–3','No se mantiene parejo en ninguna de las 3 velocidades: se pierde o se acelera antes de 15 segundos.'],['4–6','Parejo en 1 de las 3 velocidades (la que sea) y se desordena en las otras.'],['7–8','Parejo en 2 de las 3 velocidades, y si se desordena en la otra se corrige rápido.'],['9–10','Parejo en las 3 velocidades, lentas y rápidas, y también cuando el click se apaga.']]},
+  {k:'groove',n:'Ritmos básicos',s:'Básicos',h:'Los ritmos que se usan en los coros y canciones de la iglesia',
+   t:'Toca cada uno durante 30 segundos, pasando de uno a otro sin parar: (1) el ritmo de adoración, el de los coros de oración; (2) el corrido, el de los coros alegres; (3) el bolero; (4) el vals; (5) el ska; y (6) el disco, solo o mezclado con corrido, como en canciones de Miel San Marcos o Júbilo. La cumbia es un extra para los que ya la están aprendiendo.',
+   g:[['1–3','Toca solo 1 ritmo y con errores.'],['4–6','Toca 2 o 3 ritmos sin errores, por ejemplo adoración y corrido.'],['7–8','Toca 4 o 5 ritmos sin errores.'],['9–10','Toca los 6 sin errores, cambia de uno a otro sin parar y ya empieza con la cumbia.']]},
+  {k:'coord',n:'Manos y pies a la vez',s:'Coord.',h:'Cada mano y cada pie hacen algo distinto al mismo tiempo',
+   t:'Pon el metrónomo en 70, con un click por cada número, y cuenta 1-2-3-4 en voz alta, una y otra vez. Hazlo en tres pasos, 8 veces cada uno. Paso 1: toca el hi-hat en cada número (1, 2, 3 y 4), el bombo en el 1 y el 3, y la caja en el 2 y el 4. Paso 2: todo igual, pero la caja ahora suena solo en el 3. Paso 3: vuelve a la caja en el 2 y el 4, pero ahora pisa el bombo en cada número (1, 2, 3 y 4). Al final, deja de contar y canta un coro mientras toca, con el click todavía en 70.',
+   g:[['1–3','Se desordena cuando cambia la caja o el bombo.'],['4–6','Hace los 3 pasos, pero solo con el click en 60.'],['7–8','Hace los 3 pasos bien con el click en 70 y contando en voz alta.'],['9–10','Los hace sin errores, también con el click en 80 o más, y puede cantar o hablar mientras toca.']]},
+  {k:'rudim',n:'Técnica de manos',s:'Manos',h:'Golpes básicos con las baquetas, parejos y limpios',
+   t:'Pon el metrónomo en 60. En la caja o en un pad de práctica, toca estos 5 ejercicios con un golpe por cada click, 20 segundos cada uno: (1) un golpe con cada mano, alternando; (2) dos golpes con una mano y dos con la otra; (3) derecha-izquierda-derecha-derecha y luego izquierda-derecha-izquierda-izquierda; (4) un golpecito suave justo antes del golpe principal; (5) un redoble largo y seguido. Si los golpes salen parejos, sube el click de 10 en 10 (70, 80, 90…) y repite, hasta donde sigan parejos. El redoble largo no se cuenta por click: solo debe sonar seguido y parejo.',
+   g:[['1–3','Hace 1 o 2 ejercicios y los golpes suenan desiguales.'],['4–6','Hace 3 ejercicios bien, pero despacio.'],['7–8','Hace los 5 ejercicios bien a velocidad media.'],['9–10','Los 5 suenan parejos y limpios, empezando con cualquiera de las dos manos.']]},
+  {k:'dinam',n:'Fuerte y suave',s:'Volumen',h:'Controla qué tan fuerte o suave toca y marca los golpes importantes',
+   t:'En la caja, toca golpes parejos empezando muy suave, subiendo poco a poco hasta tocar fuerte y volviendo a bajar, todo en unos 15 segundos. Después toca un ritmo marcando más fuerte el 1 y el 3, y más suave los demás.',
+   g:[['1–3','Toca siempre igual de fuerte.'],['4–6','Distingue entre suave y fuerte, pero cambia de golpe, sin subir poco a poco.'],['7–8','Sube y baja el volumen poco a poco y los golpes fuertes se notan.'],['9–10','Controla 4 volúmenes distintos y también hace golpes muy suaves entre los fuertes.']]},
+  {k:'fills',n:'Rellenos y cambios',s:'Rellenos',h:'Hace el adorno entre una parte y otra sin perder el ritmo',
+   t:'Pon el metrónomo en 70. Toca el ritmo que mejor se sepa, contando 1-2-3-4 cuatro veces. En la cuarta vuelta, en lugar del ritmo haz un relleno (un adorno rápido pasando por los tambores). Termina con un golpe fuerte de bombo y hi-hat juntos justo cuando vuelve a empezar el ritmo. Repítelo 4 veces sin parar. Empieza con rellenos de 4 golpes y luego prueba con 8. Si le salen bien, repite todo con el click en 90.',
+   g:[['1–3','Se atrasa o se pierde en el relleno.'],['4–6','Hace rellenos sencillos de 4 golpes con el click en 70, sin perder la velocidad.'],['7–8','Hace rellenos distintos, de 4 y de 8 golpes, con el click en 70 y siempre vuelve bien al inicio.'],['9–10','Hace rellenos que suenan bien, incluso largos, y regresa siempre a tiempo, también con el click en 90.']]},
+  {k:'pies',n:'Pies: bombo y hi-hat',s:'Pies',h:'Los pies suenan parejos, sin tropezar',
+   t:'Pon el click en 70 y cuenta 1-2-3-4 en voz alta. Toca solo con los pies, sin usar las manos, 30 segundos cada paso. Paso 1: pisa el bombo en cada número (1, 2, 3 y 4). Paso 2: pisa el bombo solo en el 1 y el 3. Paso 3: sigue con el bombo en el 1 y el 3 y agrega el pedal del hi-hat (el que cierra los platillos) en el 2 y el 4. Paso 4, bombo doble: pisa el bombo dos veces por número, en el número y en la "y" (1-y-2-y-3-y-4-y), con el click en 60 y contando en voz alta. Si le salen bien, repite los pasos 1 a 3 con el click en 90 y el paso 4 con el click en 70.',
+   g:[['1–3','Las pisadas suenan desiguales o se le escapan golpes sin querer.'],['4–6','Hace el paso 1 y el paso 2 parejos.'],['7–8','Hace los 3 pasos parejos con el click en 70 y empieza el bombo doble (paso 4) con el click en 60.'],['9–10','Hace los 3 pasos parejos también con el click en 90 y el bombo doble parejo con el click en 70.']]},
+  {k:'cierres',n:'Arranques y finales',s:'Cierres',h:'Da el conteo, sigue las señales y termina junto con la banda',
+   t:'Toca 3 canciones o partes cortas con el equipo. Debe dar el conteo de entrada a la velocidad correcta, seguir las señales del líder (cambiar de parte, repetir, bajar o subir) y terminar cada canción junto con todos.',
+   g:[['1–3','Entra a destiempo y se pierde en los cambios.'],['4–6','Entra bien, pero necesita que le recuerden las señales o termina desfasado.'],['7–8','Entra y termina con la banda casi siempre y reconoce las señales.'],['9–10','Da el conteo seguro, sigue las señales sin dudar y siempre termina junto con los demás.']]},
+  {k:'music',n:'Tocar una canción',s:'Canción',h:'Toca una canción completa escuchando a los demás',
+   t:'Toca una canción completa, de principio a fin, sin parar. Fíjate si entra a tiempo, si toca más suave en las partes tranquilas y más fuerte en las partes de alabanza, y si termina junto con la canción.',
+   g:[['1–3','Se pierde en la canción.'],['4–6','Acompaña, pero toca igual en todas las partes.'],['7–8','Sigue las partes de la canción y cambia el volumen al tocar.'],['9–10','Suena seguro, escucha a los demás y sostiene la canción.']]}
+];
+var MAX=CRITERIA.length*10;
+var LEVELS=['Principiante','Intermedio','Avanzado'];
+
+var S={students:[],evals:[]};
+var UI={open:{},view:'home',tab:'students',sid:null,draft:null,confirm:null,newName:'',newLevel:'Principiante'};
+var ART=null,CAN_WRITE=false,PENDING_TOAST='';
+var $app=document.getElementById('app');
+var $toast=document.getElementById('toast');
+
+/* Cabecera que la plataforma pone a toda página publicada. Se repite igual al guardar. */
+var SKEL='<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>\n';
+
+/* utilidades */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function pad2(n){return String(n).padStart(2,'0');}
+function today(){var d=new Date();return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function fmtDate(iso){
+  if(!iso)return '';
+  var d=new Date(iso+'T00:00:00');
+  if(isNaN(d))return iso;
+  var o={day:'numeric',month:'short'};
+  if(d.getFullYear()!==new Date().getFullYear())o.year='numeric';
+  return d.toLocaleDateString('es',o);
+}
+function shortDate(iso){var p=String(iso||'').split('-');return p.length===3?(+p[2])+'/'+(+p[1]):'';}
+function findStudent(id){return S.students.find(function(s){return s.id===id;});}
+function evalsOf(id){
+  return S.evals.filter(function(e){return e.studentId===id;}).sort(function(a,b){
+    return (a.date||'').localeCompare(b.date||'')||(a.createdAt||0)-(b.createdAt||0);
+  });
+}
+function statsOf(id){
+  var ev=evalsOf(id),pts=ev.reduce(function(t,e){return t+(e.total||0);},0);
+  return {ev:ev,pts:pts,n:ev.length,avg:ev.length?pts/ev.length:0,last:ev[ev.length-1]};
+}
+function toast(msg){
+  $toast.textContent=msg;$toast.hidden=false;
+  clearTimeout(toast.t);toast.t=setTimeout(function(){$toast.hidden=true;},2800);
+}
+
+/* datos: viven dentro de la propia página y se guardan republicándola */
+function loadData(){
+  try{
+    var j=JSON.parse(document.getElementById('data').textContent||'{}');
+    S.students=j.students||[];S.evals=j.evals||[];
+  }catch(e){}
+}
+function buildDoc(){
+  var css=document.getElementById('css').textContent;
+  var code=document.getElementById('code').textContent;
+  var json=JSON.stringify({students:S.students,evals:S.evals}).replace(/</g,'\\u003c');
+  return SKEL
+    +'<title>Evaluación de Batería Shekinah Nueva Cosecha</title>\n'
+    +['appname','appicon'].map(function(i){var el=document.getElementById(i);return el?el.outerHTML+'\n':'';}).join('')
+    +'<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">\n'
+    +'<style id="css">'+css+'</style>\n\n'
+    +'<div class="app" id="app"></div>\n<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>\n\n'
+    +'<script id="data" type="application/json">'+json+'<\/script>\n'
+    +'<script id="code">'+code+'<\/script>\n\n</body></html>';
+}
+var LS_DATA='snc-bateria-data';
+function loadLocal(){
+  try{
+    var j=JSON.parse(localStorage.getItem(LS_DATA)||'null');
+    if(j&&Array.isArray(j.students)&&Array.isArray(j.evals)){S.students=j.students;S.evals=j.evals;}
+  }catch(e){}
+}
+function persist(){
+  try{localStorage.setItem(LS_DATA,JSON.stringify({students:S.students,evals:S.evals}));return Promise.resolve();}
+  catch(e){return Promise.reject({code:'save_failed'});}
+}
+function change(mutate,msg,next){
+  if(!ART||!CAN_WRITE){toast('Esta vista es de solo lectura.');return;}
+  var snap={s:S.students,e:S.evals};
+  mutate();
+  try{sessionStorage.setItem('nb-ui',JSON.stringify({view:next.view,tab:next.tab||UI.tab,sid:next.sid||null,msg:msg}));}catch(e){}
+  toast('Guardando…');
+  persist().then(function(){
+    UI.view=next.view;UI.sid=next.sid||null;UI.draft=null;UI.confirm=null;
+    render();window.scrollTo(0,0);toast(msg);
+  },function(err){
+    S.students=snap.s;S.evals=snap.e;
+    var c=err&&err.code;
+    if(c==='conflict')return;
+    try{sessionStorage.removeItem('nb-ui');}catch(e){}
+    if(c==='not_writer'||c==='not_granted'||c==='not_declared'||c==='capability_disabled'||c==='capability_removed'||c==='consent_required'){
+      CAN_WRITE=false;render();toast('Esta vista es de solo lectura.');
+    }else{
+      render();toast(c==='rate_limited'?'Estás guardando muy seguido. Espera un momento.':'No se pudo guardar. Intenta otra vez.');
+    }
+  });
+}
+
+/* vistas */
+function banners(){
+  var h='';
+  if(CAN_WRITE&&S.students.some(function(s){return s.example;}))
+    h+='<div class="banner"><span>Estos alumnos son de ejemplo para que veas cómo funciona.</span><button class="link" data-act="clearex">Quitar ejemplos</button></div>';
+  return h;
+}
+function heroView(n,m){
+  /* ritmo de rock básico dibujado como pasos: hi-hat, caja y bombo */
+  var rows=[['h',[1,1,1,1,1,1,1,1]],['b',[0,0,1,0,0,0,1,0]],['b',[1,0,0,0,1,0,0,0]]],steps='';
+  rows.forEach(function(r){r[1].forEach(function(on){steps+='<i'+(on?' class="'+r[0]+'"':'')+'></i>';});});
+  return '<div class="hero"><div class="hero-top"><img class="logo" src="logo.png" width="64" height="64" alt="Logo de Shekinah Nueva Cosecha"><div class="eyebrow">Iglesia Shekinah · Nueva Cosecha</div></div>'
+    +'<h1>Evaluación de batería</h1>'
+    +'<p class="sub num">'+n+' alumnos · '+m+' evaluaciones</p>'
+    +'<div class="steps" aria-hidden="true">'+steps+'</div></div>';
+}
+
+/* autoevaluación: cualquiera con el enlace, sin cuenta; se guarda solo en su celular */
+var SELF={name:'',scores:{},step:'form',hist:[],showText:false};
+var SK_DRAFT='nb-self-draft',SK_HIST='nb-self-hist';
+function selfLoad(){
+  try{var d=JSON.parse(localStorage.getItem(SK_DRAFT)||'null');if(d){SELF.name=String(d.name||'');SELF.scores=d.scores||{};}}catch(e){}
+  try{var h=JSON.parse(localStorage.getItem(SK_HIST)||'[]');if(Array.isArray(h))SELF.hist=h;}catch(e){}
+}
+function selfSaveDraft(){try{localStorage.setItem(SK_DRAFT,JSON.stringify({name:SELF.name,scores:SELF.scores}));}catch(e){}}
+function selfSaveHist(){try{localStorage.setItem(SK_HIST,JSON.stringify(SELF.hist.slice(-20)));}catch(e){}}
+function selfTotal(){return CRITERIA.reduce(function(t,c){return t+(SELF.scores[c.k]||0);},0);}
+function selfVerdict(){return verdictOf({scores:SELF.scores,total:selfTotal()});}
+function selfText(){
+  var tot=selfTotal(),vd=selfVerdict();
+  var t='Mi autoevaluación de batería · Iglesia Shekinah Nueva Cosecha\n';
+  if(SELF.name.trim())t+='Nombre: '+SELF.name.trim()+'\n';
+  t+='Total: '+tot+'/'+MAX+' · '+vd.t+'\n';
+  t+=vd.low.length?'Por reforzar: '+vd.low.map(function(c){return c.n.toLowerCase();}).join(', ')+'\n':'Todas las áreas en 6 o más\n';
+  t+=CRITERIA.map(function(c){return c.s+' '+(SELF.scores[c.k]||0);}).join(' · ');
+  return t;
+}
+function selfView(){
+  var tot=selfTotal(),h='';
+  if(SELF.step==='result'){
+    var vd=selfVerdict();
+    var weak=vd.low.slice().sort(function(a,b){return (SELF.scores[a.k]||0)-(SELF.scores[b.k]||0);}).slice(0,3);
+    h+='<button class="back" data-act="sback">← Seguir editando</button>';
+    h+='<div class="result"><h3>Tu resultado</h3><div class="big">'+tot+'<small>/'+MAX+'</small></div>'
+      +'<span class="pill '+vd.c+'">'+vd.t+'</span></div>';
+    h+='<div class="section" style="margin-top:14px"><h3>Qué practicar primero</h3><div class="stack">';
+    if(weak.length){
+      h+=weak.map(function(c){return '<div class="todo"><b>'+c.n+' · '+(SELF.scores[c.k]||0)+'/10</b><p>'+c.t+'</p></div>';}).join('');
+    }else{
+      h+='<div class="todo"><b>Todas las áreas están en 6 o más.</b><p>Sigue puliendo las que estén más bajas y practica tocar con canciones completas.</p></div>';
+    }
+    h+='</div></div>';
+    h+='<div class="section"><div class="actions">'
+      +'<a class="btn primary" href="https://wa.me/?text='+encodeURIComponent(selfText())+'" target="_blank" rel="noopener">Enviar por WhatsApp</a>'
+      +'<button class="btn" data-act="scopy">Copiar resultado</button>'
+      +'<button class="btn" data-act="ssave">Guardar este intento en mi celular</button>'
+      +'<button class="link" style="align-self:flex-start" data-act="sreset">Empezar de nuevo</button></div>';
+    if(SELF.showText)h+='<textarea class="copybox" id="s-copy" readonly>'+esc(selfText())+'</textarea>';
+    h+='</div>';
+    return h;
+  }
+  h+='<p class="intro">Practica cada prueba y puntúate con honestidad. Es para prepararte: no se guarda en la lista de alumnos ni se envía a nadie, a menos que tú lo compartas.</p>';
+  if(SELF.hist.length){
+    h+='<h3 style="margin-bottom:8px">Tus intentos guardados</h3><div class="hist">'+SELF.hist.slice(-5).reverse().map(function(r){
+      var v=verdictOf({scores:r.scores||{},total:r.total||0});
+      return '<div class="hist-row"><span>'+fmtDate(r.date)+' · <span class="pill '+v.c+'">'+v.t+'</span></span><b>'+(r.total||0)+'</b></div>';
+    }).join('')+'</div>';
+  }
+  h+='<div class="field self-name"><label for="s-name">Tu nombre (opcional)</label><input type="text" id="s-name" data-sfield="name" maxlength="40" autocomplete="off" placeholder="Para saber de quién es el resultado" value="'+esc(SELF.name)+'"></div>';
+  h+='<div class="stack">'+CRITERIA.map(function(c){
+    var v=SELF.scores[c.k]||0,pads='';
+    for(var i=1;i<=10;i++)pads+='<button type="button" class="pad'+(i<=v?' on':'')+'" data-act="spad" data-k="'+c.k+'" data-v="'+i+'" aria-label="'+c.n+': '+i+'" aria-pressed="'+(i===v)+'">'+i+'</button>';
+    var open=!!UI.open['s:'+c.k],test='';
+    if(open)test='<div class="test"><p><b>Prueba.</b> '+c.t+'</p><ul class="guide">'
+      +c.g.map(function(r){return '<li><b>'+r[0]+'</b><span>'+r[1]+'</span></li>';}).join('')+'</ul></div>';
+    return '<div class="crit"><div class="crit-head"><div><div class="crit-name">'+c.n+'</div><div class="crit-hint">'+c.h+'</div></div>'
+      +'<div class="crit-val">'+v+'<small>/10</small></div></div><div class="pads" role="group" aria-label="'+c.n+'">'+pads+'</div>'
+      +'<button type="button" class="link" style="align-self:flex-start" data-act="stog" data-k="'+c.k+'" aria-expanded="'+open+'">'+(open?'Ocultar prueba':'Ver prueba y cómo puntuar')+'</button>'+test+'</div>';
+  }).join('')+'</div>';
+  h+='<div class="savebar"><div class="savebar-in"><div class="live"><b>'+tot+'</b><span>de '+MAX+' puntos</span></div>'
+    +'<button class="btn primary" data-act="sres"'+(tot?'':' disabled')+'>Ver resultado</button></div></div>';
+  return h;
+}
+
+function backupView(){
+  var h='<div class="section"><h3>Respaldo</h3><p class="meta">Tus alumnos y evaluaciones se guardan solo en este celular. Copia un respaldo por si cambias de teléfono o se borran los datos del navegador.</p>'
+    +'<div class="actions"><button class="btn" data-act="bkcopy">Copiar respaldo</button><button class="btn" data-act="bkshow">'+(UI.bk?'Cerrar':'Restaurar desde un respaldo')+'</button></div>';
+  if(UI.bk)h+='<textarea class="copybox" id="bk-text" placeholder="Pega aquí el respaldo copiado">'+esc(UI.bkText||'')+'</textarea><button class="btn primary" data-act="bkrestore">Restaurar</button>';
+  return h+'</div>';
+}
+function homeView(){
+  var stu=S.students.slice().sort(function(a,b){return (a.name||'').localeCompare(b.name||'','es');});
+  var h=heroView(stu.length,S.evals.length);
+  h+=banners();
+  h+='<div class="tabs" role="tablist">'
+    +'<button class="tab" role="tab" data-act="tab" data-v="students" aria-selected="'+(UI.tab==='students')+'">Alumnos</button>'
+    +'<button class="tab" role="tab" data-act="tab" data-v="ranking" aria-selected="'+(UI.tab==='ranking')+'">Ranking</button>'
+    +'<button class="tab" role="tab" data-act="tab" data-v="self" aria-selected="'+(UI.tab==='self')+'">Autoevaluación</button></div>';
+  if(UI.tab==='ranking')return h+rankingView(stu);
+  if(UI.tab==='self')return h+selfView();
+  if(CAN_WRITE){
+    h+='<form class="add" data-form="student"><label class="sr" for="newName">Nombre del alumno</label>'
+      +'<input type="text" id="newName" data-field="newName" placeholder="Nombre del alumno" autocomplete="off" maxlength="60" value="'+esc(UI.newName)+'">'
+      +'<label class="sr" for="newLevel">Nivel</label>'
+      +'<select id="newLevel" data-field="newLevel">'+LEVELS.map(function(l){return '<option'+(l===UI.newLevel?' selected':'')+'>'+l+'</option>';}).join('')+'</select>'
+      +'<button class="btn primary" type="submit">Agregar</button></form>';
+  }
+  if(!stu.length){
+    h+=CAN_WRITE
+      ?'<div class="empty"><b>Aún no tienes alumnos</b>Escribe el nombre de tu primer alumno arriba y toca Agregar. Después podrás evaluarlo y sumar puntos.</div>'
+      :'<div class="empty"><b>Aún no hay alumnos</b>Cuando se agreguen y evalúen, sus notas aparecerán aquí.</div>';
+    return h+backupView();
+  }
+  h+='<div class="stack">'+stu.map(function(s){
+    var st=statsOf(s.id);
+    return '<button class="row" data-act="open" data-id="'+esc(s.id)+'">'
+      +'<span class="row-main"><span class="row-name">'+esc(s.name)+'</span>'
+      +'<span class="row-meta"><span class="pill">'+esc(s.level||'')+'</span><span>'+(st.last?'Última: '+fmtDate(st.last.date):'Sin evaluar')+'</span></span></span>'
+      +'<span class="pts"><b>'+st.pts+'</b><small>pts</small></span></button>';
+  }).join('')+'</div>';
+  return h+backupView();
+}
+function rankingView(stu){
+  if(!stu.length)return '<div class="empty"><b>El ranking aparecerá aquí</b>Cuando haya alumnos evaluados, verás quién suma más puntos.</div>';
+  var rows=stu.map(function(s){return {s:s,pts:statsOf(s.id).pts};}).sort(function(a,b){return b.pts-a.pts||(a.s.name||'').localeCompare(b.s.name||'','es');});
+  var top=Math.max.apply(null,rows.map(function(r){return r.pts;}))||1;
+  return '<div class="stack">'+rows.map(function(r,i){
+    return '<button class="rank'+(i===0&&r.pts>0?' first':'')+'" data-act="open" data-id="'+esc(r.s.id)+'" style="text-align:left;width:100%">'
+      +'<span class="rank-pos">'+(i+1)+'</span>'
+      +'<span><span class="rank-name">'+esc(r.s.name)+'</span><span class="rank-bar" style="display:block"><i style="width:'+Math.round(r.pts/top*100)+'%"></i></span></span>'
+      +'<span class="pts"><b>'+r.pts+'</b><small>pts</small></span></button>';
+  }).join('')+'</div>';
+}
+function trendSvg(ev){
+  var list=ev.slice(-10),n=list.length,W=320,H=140,L=28,R=6,T=16,B=22;
+  var iw=W-L-R,ih=H-T-B,step=iw/n,bw=Math.min(28,step*0.62);
+  function y(v){return T+ih*(1-v/MAX);}
+  var g='';
+  [0,MAX/2,MAX].forEach(function(v){
+    g+='<line class="grid" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'"/><text x="'+(L-5)+'" y="'+(y(v)+3)+'" text-anchor="end">'+v+'</text>';
+  });
+  list.forEach(function(e,i){
+    var h=ih*(e.total||0)/MAX,x=L+step*i+(step-bw)/2,yy=T+ih-h;
+    g+='<rect class="bar'+(i===n-1?' last':'')+'" x="'+x.toFixed(1)+'" y="'+yy.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(h,1).toFixed(1)+'" rx="3"/>'
+      +'<text class="val" x="'+(x+bw/2).toFixed(1)+'" y="'+(yy-4).toFixed(1)+'" text-anchor="middle">'+(e.total||0)+'</text>'
+      +'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle">'+shortDate(e.date)+'</text>';
+  });
+  return '<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Puntos por evaluación, de 0 a '+MAX+'">'+g+'</svg>';
+}
+function detailView(){
+  var s=findStudent(UI.sid),st=statsOf(s.id);
+  var h='<button class="back" data-act="back">← Alumnos</button>';
+  h+='<div class="head"><h2>'+esc(s.name)+'</h2><p class="sub"><span class="pill">'+esc(s.level||'')+'</span></p></div>';
+  h+='<div class="tiles">'
+    +'<div class="tile"><b>'+st.pts+'</b><span>Puntos acumulados</span></div>'
+    +'<div class="tile"><b>'+(st.n?Math.round(st.avg):'–')+(st.n?'<small>/'+MAX+'</small>':'')+'</b><span>Promedio por evaluación</span></div>'
+    +'<div class="tile"><b>'+st.n+'</b><span>Evaluaciones</span></div></div>';
+  if(st.last){
+    var vd=verdictOf(st.last);
+    h+='<div class="state"><span class="pill '+vd.c+'">'+vd.t+'</span><span>'
+      +(vd.low.length?'Reforzar: '+vd.low.map(function(c){return c.n.toLowerCase();}).join(', ')+'.':'Todas las áreas están en 6 o más.')+'</span></div>';
+  }
+  if(CAN_WRITE)h+='<button class="btn primary wide" data-act="starteval">Nueva evaluación</button>';
+  if(st.n){
+    h+='<div class="section"><h3>Evolución</h3>'+trendSvg(st.ev)+'</div>';
+    h+='<div class="section"><h3>Promedio por área</h3><div class="stack">'+CRITERIA.map(function(c){
+      var avg=st.ev.reduce(function(t,e){return t+((e.scores&&e.scores[c.k])||0);},0)/st.n;
+      return '<div class="avg"><span>'+c.s+'</span><span class="meter"><i style="width:'+(avg*10)+'%"></i></span><b'+(avg<6?' class="low"':'')+'>'+avg.toFixed(1)+'</b></div>';
+    }).join('')+'</div></div>';
+    h+='<div class="section"><h3>Historial</h3><div class="stack">'+st.ev.slice().reverse().map(evCard).join('')+'</div></div>';
+  }else{
+    h+='<div class="section"><div class="empty"><b>Sin evaluaciones todavía</b>'+(CAN_WRITE?'Toca Nueva evaluación después de la próxima clase.':'Las notas aparecerán aquí después de la próxima evaluación.')+'</div></div>';
+  }
+  if(CAN_WRITE){
+    var confirmS=UI.confirm&&UI.confirm.type==='student'&&UI.confirm.id===s.id;
+    h+='<div class="section">'+(confirmS
+      ?'<div class="confirm"><span>¿Borrar a '+esc(s.name)+' y todas sus evaluaciones?</span><button class="link danger" data-act="delstudent" data-id="'+esc(s.id)+'">Sí, borrar</button><button class="link" data-act="cancel">Cancelar</button></div>'
+      :'<button class="link danger" style="align-self:flex-start" data-act="askdel" data-type="student" data-id="'+esc(s.id)+'">Borrar alumno</button>')+'</div>';
+  }
+  return h;
+}
+function verdictOf(e){
+  var sc=e.scores||{},tot=e.total||0;
+  var low=CRITERIA.filter(function(c){return (sc[c.k]||0)<6;});
+  var v;
+  if(tot>=80&&!low.length)v={t:'Base sólida',c:'good'};
+  else if(tot>=60)v={t:'Base en construcción',c:'warn'};
+  else v={t:'Reforzar la base',c:'bad'};
+  v.low=low;
+  return v;
+}
+function evCard(e){
+  var sc=e.scores||{},vd=verdictOf(e);
+  var confirmE=UI.confirm&&UI.confirm.type==='eval'&&UI.confirm.id===e.id;
+  var tail='';
+  if(CAN_WRITE)tail=confirmE
+    ?'<div class="confirm"><span>¿Borrar esta evaluación?</span><button class="link danger" data-act="deleval" data-id="'+esc(e.id)+'">Sí, borrar</button><button class="link" data-act="cancel">Cancelar</button></div>'
+    :'<button class="link danger" style="align-self:flex-start" data-act="askdel" data-type="eval" data-id="'+esc(e.id)+'">Borrar</button>';
+  return '<article class="ev"><div class="ev-top"><div class="ev-title"><b>'+fmtDate(e.date)+'</b>'+(e.piece?' · '+esc(e.piece):'')+'</div>'
+    +'<div class="ev-total">'+(e.total||0)+'<small>/'+MAX+'</small></div></div>'
+    +'<div class="state" style="margin:0"><span class="pill '+vd.c+'">'+vd.t+'</span>'
+      +(vd.low.length?'<span>Reforzar: '+vd.low.map(function(c){return c.s.toLowerCase();}).join(', ')+'</span>':'')+'</div>'
+    +'<div class="chips">'+CRITERIA.map(function(c){return '<span class="chip">'+c.s+'<b>'+(sc[c.k]||0)+'</b></span>';}).join('')+'</div>'
+    +(e.bpm?'<p class="meta num">Velocidad del click: '+e.bpm+'</p>':'')
+    +(e.note?'<p class="note">'+esc(e.note)+'</p>':'')
+    +tail+'</article>';
+}
+function draftTotal(){
+  var sc=UI.draft.scores;
+  return CRITERIA.reduce(function(t,c){return t+(sc[c.k]||0);},0);
+}
+function evalView(){
+  var s=findStudent(UI.sid),d=UI.draft,total=draftTotal();
+  var h='<button class="back" data-act="backdetail">← Cancelar</button>';
+  h+='<div class="head"><h2>Evaluar a '+esc(s.name)+'</h2><p class="sub">Puntúa cada área de 0 a 10. Usa el metrónomo (el click que marca el tiempo), da 3 intentos en cada prueba y puntúa el mejor intento que le salió parejo. Base sólida: 80 puntos o más y ninguna área por debajo de 6.</p></div>';
+  h+='<div class="fields">'
+    +'<div class="field"><label for="f-date">Fecha</label><input type="date" id="f-date" data-field="date" value="'+esc(d.date)+'"></div>'
+    +'<div class="field"><label for="f-bpm">Velocidad del click (BPM)</label><input type="number" id="f-bpm" data-field="bpm" inputmode="numeric" min="30" max="300" placeholder="Ej. 90" value="'+esc(d.bpm)+'"></div>'
+    +'<div class="field full"><label for="f-piece">Canción o ejercicio</label><input type="text" id="f-piece" data-field="piece" maxlength="80" autocomplete="off" placeholder="Ej. Ritmo de rock básico" value="'+esc(d.piece)+'"></div></div>';
+  h+='<div class="stack" style="margin-top:12px">'+CRITERIA.map(function(c){
+    var v=d.scores[c.k]||0,pads='';
+    for(var i=1;i<=10;i++)pads+='<button type="button" class="pad'+(i<=v?' on':'')+'" data-act="pad" data-k="'+c.k+'" data-v="'+i+'" aria-label="'+c.n+': '+i+'" aria-pressed="'+(i===v)+'">'+i+'</button>';
+    var open=!!UI.open[c.k],test='';
+    if(open)test='<div class="test"><p><b>Prueba.</b> '+c.t+'</p><ul class="guide">'
+      +c.g.map(function(r){return '<li><b>'+r[0]+'</b><span>'+r[1]+'</span></li>';}).join('')+'</ul></div>';
+    return '<div class="crit"><div class="crit-head"><div><div class="crit-name">'+c.n+'</div><div class="crit-hint">'+c.h+'</div></div>'
+      +'<div class="crit-val">'+v+'<small>/10</small></div></div><div class="pads" role="group" aria-label="'+c.n+'">'+pads+'</div>'
+      +'<button type="button" class="link" style="align-self:flex-start" data-act="tog" data-k="'+c.k+'" aria-expanded="'+open+'">'+(open?'Ocultar prueba':'Ver prueba y cómo puntuar')+'</button>'+test+'</div>';
+  }).join('')+'</div>';
+  h+='<div class="field" style="margin-top:14px"><label for="f-note">Comentario para el alumno</label><textarea id="f-note" data-field="note" maxlength="400" placeholder="Qué salió bien y qué practicar esta semana">'+esc(d.note)+'</textarea></div>';
+  h+='<div class="savebar"><div class="savebar-in"><div class="live"><b>'+total+'</b><span>de '+MAX+' puntos</span></div>'
+    +'<button class="btn primary" data-act="save"'+(total?'':' disabled')+'>Guardar evaluación</button></div></div>';
+  return h;
+}
+
+/* render */
+function render(){
+  var html;
+  if(CAN_WRITE&&UI.view==='eval'&&UI.draft&&findStudent(UI.sid))html=evalView();
+  else if((UI.view==='detail'||UI.view==='eval')&&findStudent(UI.sid)){UI.view='detail';html=detailView();}
+  else{UI.view='home';html=homeView();}
+  $app.innerHTML=html;
+}
+
+/* acciones */
+function addStudent(){
+  var name=UI.newName.trim();
+  if(!name){toast('Escribe el nombre del alumno.');return;}
+  var rec={id:uid(),name:name,level:UI.newLevel,createdAt:Date.now()};
+  change(function(){S.students=S.students.concat([rec]);},name+' agregado',{view:'home',tab:'students'});
+}
+function saveEval(){
+  var d=UI.draft,total=draftTotal();
+  if(!total)return;
+  var rec={id:uid(),studentId:UI.sid,date:d.date||today(),piece:(d.piece||'').trim(),bpm:d.bpm?Number(d.bpm):null,
+    scores:Object.assign({},d.scores),total:total,note:(d.note||'').trim(),createdAt:Date.now()};
+  change(function(){S.evals=S.evals.concat([rec]);},'Guardado: '+total+' puntos',{view:'detail',sid:UI.sid});
+}
+function delEval(id){
+  var sid=UI.sid;
+  change(function(){S.evals=S.evals.filter(function(e){return e.id!==id;});},'Evaluación borrada',{view:'detail',sid:sid});
+}
+function delStudent(id){
+  change(function(){
+    S.students=S.students.filter(function(s){return s.id!==id;});
+    S.evals=S.evals.filter(function(e){return e.studentId!==id;});
+  },'Alumno borrado',{view:'home'});
+}
+function clearExamples(){
+  change(function(){
+    var ex={};S.students.forEach(function(s){if(s.example)ex[s.id]=1;});
+    S.students=S.students.filter(function(s){return !s.example;});
+    S.evals=S.evals.filter(function(e){return !e.example&&!ex[e.studentId];});
+  },'Ejemplos quitados',{view:'home'});
+}
+
+$app.addEventListener('click',function(e){
+  var t=e.target.closest('[data-act]');
+  if(!t)return;
+  var a=t.dataset.act,id=t.dataset.id;
+  if(a==='tab'){UI.tab=t.dataset.v;render();}
+  else if(a==='open'){UI.sid=id;UI.view='detail';UI.confirm=null;render();window.scrollTo(0,0);}
+  else if(a==='back'){UI.view='home';UI.sid=null;UI.confirm=null;render();window.scrollTo(0,0);}
+  else if(a==='backdetail'){UI.view='detail';UI.draft=null;render();window.scrollTo(0,0);}
+  else if(a==='starteval'){UI.draft={date:today(),piece:'',bpm:'',note:'',scores:{}};UI.view='eval';UI.confirm=null;render();window.scrollTo(0,0);}
+  else if(a==='pad'){
+    var k=t.dataset.k,v=+t.dataset.v,cur=UI.draft.scores[k]||0;
+    UI.draft.scores[k]=(cur===v)?v-1:v;render();
+  }
+  else if(a==='tog'){UI.open[t.dataset.k]=!UI.open[t.dataset.k];render();}
+  else if(a==='spad'){
+    var sk=t.dataset.k,sv=+t.dataset.v,sc=SELF.scores[sk]||0;
+    SELF.scores[sk]=(sc===sv)?sv-1:sv;selfSaveDraft();render();
+  }
+  else if(a==='stog'){UI.open['s:'+t.dataset.k]=!UI.open['s:'+t.dataset.k];render();}
+  else if(a==='sres'){if(selfTotal()){SELF.step='result';SELF.showText=false;render();window.scrollTo(0,0);}}
+  else if(a==='sback'){SELF.step='form';render();window.scrollTo(0,0);}
+  else if(a==='scopy'){
+    var txt=selfText();
+    var done=function(){toast('Resultado copiado');};
+    var fail=function(){SELF.showText=true;render();toast('Selecciona el texto y cópialo.');};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,fail);}else fail();
+  }
+  else if(a==='ssave'){
+    SELF.hist.push({date:today(),total:selfTotal(),scores:Object.assign({},SELF.scores)});
+    selfSaveHist();toast('Intento guardado en este celular');
+  }
+  else if(a==='sreset'){SELF.scores={};SELF.step='form';SELF.showText=false;selfSaveDraft();render();window.scrollTo(0,0);}
+  else if(a==='save')saveEval();
+  else if(a==='askdel'){UI.confirm={type:t.dataset.type,id:id};render();}
+  else if(a==='cancel'){UI.confirm=null;render();}
+  else if(a==='deleval')delEval(id);
+  else if(a==='delstudent')delStudent(id);
+  else if(a==='clearex')clearExamples();
+  else if(a==='bkcopy'){
+    var bk=JSON.stringify({v:1,students:S.students,evals:S.evals});
+    var ok=function(){toast('Respaldo copiado');};
+    var no=function(){UI.bk=true;UI.bkText=bk;render();toast('Selecciona el texto y cópialo.');};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(bk).then(ok,no);}else no();
+  }
+  else if(a==='bkshow'){UI.bk=!UI.bk;UI.bkText='';render();}
+  else if(a==='bkrestore'){
+    var ta=document.getElementById('bk-text'),raw=ta?ta.value.trim():'';
+    try{
+      var j=JSON.parse(raw);
+      if(!j||!Array.isArray(j.students)||!Array.isArray(j.evals))throw new Error('x');
+      var ids={},eids={};
+      S.students.forEach(function(s){ids[s.id]=1;});S.evals.forEach(function(x){eids[x.id]=1;});
+      var ns=j.students.filter(function(s){return s&&s.id&&!ids[s.id];}),ne=j.evals.filter(function(x){return x&&x.id&&!eids[x.id];});
+      UI.bk=false;
+      change(function(){S.students=S.students.concat(ns);S.evals=S.evals.concat(ne);},'Restaurado: '+ns.length+' alumnos y '+ne.length+' evaluaciones',{view:'home',tab:'students'});
+    }catch(err){toast('Ese respaldo no es válido.');}
+  }
+});
+$app.addEventListener('input',function(e){
+  if(e.target.dataset&&e.target.dataset.sfield==='name'){SELF.name=e.target.value;selfSaveDraft();return;}
+  var f=e.target.dataset&&e.target.dataset.field;
+  if(!f)return;
+  var v=e.target.value;
+  if(f==='newName')UI.newName=v;
+  else if(f==='newLevel')UI.newLevel=v;
+  else if(UI.draft)UI.draft[f]=v;
+});
+$app.addEventListener('submit',function(e){
+  e.preventDefault();
+  if(e.target.dataset.form==='student')addStudent();
+});
+
+/* arranque: la página ya trae los datos, así que se ve completa para cualquiera */
+function init(){
+  loadData();
+  loadLocal();
+  ART={};CAN_WRITE=true;
+  selfLoad();
+  try{
+    var st=JSON.parse(sessionStorage.getItem('nb-ui')||'null');
+    if(st){
+      sessionStorage.removeItem('nb-ui');
+      UI.view=st.view||'home';UI.tab=st.tab||'students';UI.sid=st.sid||null;PENDING_TOAST=st.msg||'';
+    }
+  }catch(e){}
+  render();
+  if(PENDING_TOAST)toast(PENDING_TOAST);
+  var use=window.claude&&window.claude.use;
+  if(!use)return;
+  Promise.all([
+    use.call(window.claude,'artifact').catch(function(){return null;}),
+    use.call(window.claude,'user').catch(function(){return null;})
+  ]).then(function(r){
+    ART=r[0];
+    if(!ART||!r[1])return false;
+    return Promise.all([r[1].isOwner(),r[1].canEdit()]).then(function(x){return !!(x[0]||x[1]);});
+  }).then(function(can){
+    if(can){CAN_WRITE=true;render();}
+  });
+}
+init();
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){navigator.serviceWorker.register('sw.js').catch(function(){});}
+})();
+</script>
+</body>
+</html>
